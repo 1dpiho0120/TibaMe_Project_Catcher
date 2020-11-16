@@ -1,15 +1,16 @@
-'''     ### 影片人臉偵測 & 特徵萃取 ###       '''
+'''          ### 影片__人臉偵測 & 特徵萃取 ###       '''
 
 # 載入所需的套件
-import numpy as np
-from imutils import face_utils     # 人臉特徵萃取套件
 import dlib
 import cv2
-import imutils      # github上一個很方便的圖像處理包，可以導入python，實現平移，旋轉，調整大小，骨架化等一些操作
+import numpy as np
+# github上一個很方便的圖像處理包，可以導入python，實現平移，旋轉，調整大小，骨架化等一些操作
+import imutils
+from imutils import face_utils      # 人臉特徵萃取套件
 
 
-# 開啟影片檔案
-cap = cv2.VideoCapture('./專題/video61.mp4')
+# 使用 OpenCV 讀取影片檔案
+cap = cv2.VideoCapture('./video61.mp4')
 
 
 # 取得畫面尺寸
@@ -44,19 +45,21 @@ out = cv2.VideoWriter('./專題/output.mp4', fourcc, 20.0, (width, height))
 
 
 # Dlib 的人臉偵測器 & 特徵萃取器
+'''Dlib 使用的人臉偵測演算法是以方向梯度直方圖（HOG）的特徵加上線性分類器（linear classifier）、
+影像金字塔（image pyramid）與滑動窗格（sliding window）來實作。'''
 detector = dlib.get_frontal_face_detector()
+
 '''
 shape_predictor_68_face_landmarks.dat 為訓練好的模型，須先下載存取在本地端
 (https://github.com/italojs/facial-landmarks-recognition-/blob/master/shape_predictor_68_face_landmarks.dat)
 '''
-predictor = dlib.shape_predictor("./專題/shape_predictor_68_face_landmarks.dat")
+predictor = dlib.shape_predictor("./shape_predictor_68_face_landmarks.dat")
 
 
 # 以迴圈從影片檔案讀取影格，並顯示出來
 '''
 在這個無窮迴圈中，每次呼叫 cap.read() 就會讀取一張畫面，
-其第一個傳回值 ret代表讀取成功與否（True 代表成功，False 代表失敗），
-而第二個傳回值 frame 就是影片的單張畫面。
+其第一個傳回值 ret代表讀取成功與否（True 代表成功，False 代表失敗），而第二個傳回值 frame 就是影片的單張畫面。
 '''
 while(True):
     ret, frame = cap.read()
@@ -72,13 +75,13 @@ while(True):
 
     # 取出所有偵測的結果
     '''face_rects會回傳兩個tuple，為人臉偵測的方框 ex. [(633, 237), (1079, 683)]'''
-    for d in face_rects:
-        x1 = d.left()
-        y1 = d.top()
-        x2 = d.right()
-        y2 = d.bottom()
+    for face in face_rects:
+        x1 = face.left()
+        y1 = face.top()
+        x2 = face.right()
+        y2 = face.bottom()
 
-        shape = predictor(frame, d)             # 在每一個單張畫面的人臉方框檢查特徵點
+        shape = predictor(frame, face)             # 在每一個單張畫面的人臉方框檢查特徵點
         shape = face_utils.shape_to_np(shape)   # 把臉部特徵點座標轉化為數組 Numpy array
 
         # 以方框標示偵測的人臉 (影像, 開始座標, 結束座標, 顏色, 線條寬度<正數為粗細，負數為填滿>, 反鋸齒線條)
@@ -97,7 +100,7 @@ while(True):
     '''
     如下面的判斷式——若使用者没有按下q键,就會持續等待(循環)，直到觸發後執行break跳出迴圈
     0xFF是十六進制常數，二進制值為11111111，和後面的ASCII碼對照。ord(' ')可以將字符轉化為對應的整數(ASCII碼)
-    此處是為了防止BUG
+    此動作是為了防止BUG
     '''
     if cv2.waitKey(1) & 0xFF == ord('q'):
         break
