@@ -13,7 +13,7 @@ import joblib    # 保存 sklearn 模型的函式庫，亦可使用 pickle
 
 
 # 定義情緒種類，dataset以以下資料夾分類
-emotions = ["anger", "disgust", "fear", "happy", "neutral", "sad", "surprise"]
+emotions = ["anger", "happy", "neutral", "sad", "surprise"]
 
 
 # 定義字適應
@@ -26,7 +26,7 @@ clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
 detector = dlib.get_frontal_face_detector(
 )                                     # 呼叫人臉偵測器
 predictor = dlib.shape_predictor(
-    "./shape_predictor_68_face_landmarks.dat")     # 呼叫特徵點萃取器
+    "./一些Python程式/shape_predictor_68_face_landmarks.dat")     # 呼叫特徵點萃取器
 
 
 '''    ★  SVM w/ Linear Kernel ★ （以下kernel參數可調整再訓練）  '''
@@ -41,7 +41,7 @@ data = {}           # 將所有特徵點的值帶入字典   data['landmarks_vec
 
 # 定義一個function蒐集並建立所有圖片檔案名稱的list, 隨機將資料分成80/20
 def get_files(emotion):
-    files = glob.glob("./dataset_test/2_SAVEE/%s/*" %
+    files = glob.glob("./Dataset/5_CK+/%s/*" %
                       emotion)      # 將所有檔案名稱回傳並轉為list型別
     random.shuffle(files)                           # 將list裡面的檔案名稱順序洗牌
     training = files[:int(len(files)*0.8)]          # 取得list前面80%的檔案做為訓練集
@@ -104,7 +104,7 @@ def make_sets():
         print(" working on %s" % emotion)
         training, prediction = get_files(emotion)
 
-        # 將數據附加到訓練集的list和測試集的list中，並生成標籤0〜7
+        # 將數據附加到訓練集的list和測試集的list中，並生成標籤0〜6
         for item in training:                   # 對訓練集的每一張照片做迴圈
             img = cv2.imread(item)              # 讀取訓練集的照片
             # 轉換為灰階照片
@@ -117,7 +117,7 @@ def make_sets():
                 print("no face detected on this one")
 
             else:
-                # 若有偵測道人臉，將特徵點矩陣加入training_data
+                # 若有偵測到人臉，將特徵點矩陣加入training_data
                 training_data.append(data['landmarks_vectorised'])
                 # 將對應的情緒標籤號碼加入training_labels
                 training_labels.append(emotions.index(emotion))
@@ -164,4 +164,4 @@ print("Mean value lin svm: %s" % np.mean(accuracy_lin))
 
 # 儲存訓練好的模型
 '''前面的clf為我們上面的svm.SVC()，後面的clf.pkl為檔名'''
-joblib.dump(clf, 'clf_1.pkl')
+joblib.dump(clf, './一些Python程式/clf_4.pkl')
