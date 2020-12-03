@@ -9,7 +9,7 @@ import time
 
 
 # 設定瀏覽器與url
-driver = Chrome('./爬蟲_HOHO/推薦系統爬蟲/chromedriver')  # 指定瀏覽器的位置
+driver = Chrome('./爬蟲/推薦系統爬蟲/chromedriver')  # 指定瀏覽器的位置
 url = "https://listenmood.com/en/i-m-{emotion}-play-me-{style}--{e_num}{s_num}"
 
 
@@ -64,4 +64,4 @@ df = pd.DataFrame(ytbsong_list, columns=["Mood", "Title", "Content"])
 print(df)
 
 # 將DataFrame寫入csv
-df.to_csv('./推薦系統資料.csv', header=True)
+df.to_csv('./爬蟲/推薦系統爬蟲/推薦系統資料.csv', header=True, index=False)
