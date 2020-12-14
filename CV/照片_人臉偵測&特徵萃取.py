@@ -28,6 +28,7 @@ predictor = dlib.shape_predictor(
 # 偵測人臉
 '''detector 函數的第二個參數是指定反取樣（unsample）的次數，如果圖片太小的時候，將其設為 1 可讓程式偵較容易測出更多的人臉。'''
 face_rects = detector(img, 0)
+# print(face_rects)    -> 顯示結果為：rectangles[[(185, 305) (400, 520)]]
 
 
 # 顯示結果
@@ -43,6 +44,7 @@ for face in face_rects:
 
     # 將面部landmarks標誌(x, y)座標轉換成NumPy陣列
     shape = face_utils.shape_to_np(shape)
+    # print(shape)   -> 68組(x,y)座標
 
     # 以方框標示偵測的人臉 (影像, 開始座標, 結束座標, 顏色, 線條寬度<正數為粗細，負數為填滿>, 反鋸齒線條)
     cv2.rectangle(img, (x1, y1), (x2, y2), (0, 255, 0), 3, cv2.LINE_AA)
