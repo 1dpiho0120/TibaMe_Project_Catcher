@@ -3,14 +3,14 @@
 # 載入所需的套件
 import dlib
 import cv2
-import numpy as np
 # github上一個很方便的圖像處理包，可以導入python，實現平移，旋轉，調整大小，骨架化等一些操作
 import imutils
 from imutils import face_utils      # 人臉特徵萃取套件
 
 
 # 使用 OpenCV 讀取影片檔案
-cap = cv2.VideoCapture('./video61.mp4')
+cap = cv2.VideoCapture(
+    '/media/hoho/Transcend/備份/專題/CV/dataset_test/people.mp4')
 
 
 # 取得畫面尺寸
@@ -37,11 +37,12 @@ fourcc = cv2.VideoWriter_fourcc(*'XVID')
 '''
 cv2.VideoWriter() -> 使用這個函數可以創建一個用於寫出影片文件的句柄
 第一個參數是指定輸出的檔名，例如：下列範例中的 output.mp4，
-第二個參數為指定 FourCC，即為先前第32行設定寫出影片的編碼格式
+第二個參數為指定 FourCC，即為先前第33行設定寫出影片的編碼格式
 第三個參數為 fps 影像偵率，FPS值 = 影格率，是用於測量顯示影格數的量度。一般來說FPS用於描述影片、電子繪圖或遊戲每秒播放多少影格
 第四個參數為先前取得的原影像大小
 '''
-out = cv2.VideoWriter('./專題/output.mp4', fourcc, 20.0, (width, height))
+out = cv2.VideoWriter(
+    '/media/hoho/Transcend/備份/專題/CV/dataset_test/output.mp4', fourcc, 20.0, (width, height))
 
 
 # Dlib 的人臉偵測器 & 特徵萃取器
@@ -53,7 +54,8 @@ detector = dlib.get_frontal_face_detector()
 shape_predictor_68_face_landmarks.dat 為訓練好的模型，須先下載存取在本地端
 (https://github.com/italojs/facial-landmarks-recognition-/blob/master/shape_predictor_68_face_landmarks.dat)
 '''
-predictor = dlib.shape_predictor("./shape_predictor_68_face_landmarks.dat")
+predictor = dlib.shape_predictor(
+    "/media/hoho/Transcend/備份/專題/CV/shape_predictor_68_face_landmarks.dat")
 
 
 # 以迴圈從影片檔案讀取影格，並顯示出來
@@ -61,8 +63,9 @@ predictor = dlib.shape_predictor("./shape_predictor_68_face_landmarks.dat")
 在這個無窮迴圈中，每次呼叫 cap.read() 就會讀取一張畫面，
 其第一個傳回值 ret代表讀取成功與否（True 代表成功，False 代表失敗），而第二個傳回值 frame 就是影片的單張畫面。
 '''
-while(True):
+while True:
     ret, frame = cap.read()
+    # print(ret)
 
     '''
     這裡我們改用 detector.run 來偵測人臉，它的第三個參數是指定分數的門檻值，
@@ -70,7 +73,7 @@ while(True):
     此分數愈大, 表示愈接近人臉，分數愈低表示愈接近誤判。子偵測器的編號則可以用來判斷人臉的方向。
     '''
     # 偵測人臉
-    face_rects, scores, idx = detector.run(frame, 0)
+    face_rects, scores, idx = detector.run(frame, 1)
     #print(scores, idx)
 
     # 取出所有偵測的結果
@@ -82,17 +85,14 @@ while(True):
         y2 = face.bottom()
 
         shape = predictor(frame, face)             # 在每一個單張畫面的人臉方框檢查特徵點
-        shape = face_utils.shape_to_np(shape)   # 把臉部特徵點座標轉化為數組 Numpy array
+        shape = face_utils.shape_to_np(shape)      # 把臉部特徵點座標轉化為數組 Numpy array
 
         # 以方框標示偵測的人臉 (影像, 開始座標, 結束座標, 顏色, 線條寬度<正數為粗細，負數為填滿>, 反鋸齒線條)
         cv2.rectangle(frame, (x1, y1), (x2, y2), (0, 255, 0), 4, cv2.LINE_AA)
 
         for (x, y) in shape:
             # 以圓點標示特徵點 （圖像、圓心、半徑、顏色、線條寬度<正數為粗細，負數為填滿>, 反鋸齒線條）
-            cv2.circle(frame, (x, y), 2, (0, 0, 255), -1, cv2.LINE_AA)
-
-    # 寫入影格
-    out.write(frame)
+            cv2.circle(frame, (x, y), 1, (0, 0, 255), -1, cv2.LINE_AA)
 
     # 顯示結果 (命名窗口名稱, 欲顯示的圖片)
     video = cv2.imshow("Facial Landmarks", frame)
