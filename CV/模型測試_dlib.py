@@ -9,16 +9,14 @@ from sklearn.svm import SVC             # Support Vector Classification
 import joblib                           # 保存 sklearn 模型的函式庫，亦可使用 pickle
 
 
-
-img = ("./dataset_test/happy1.jpg")
-
+img = ("/media/hoho/Transcend/備份/專題/CV/dataset_test/pohan2.jpg")
 
 
 # 使用 Dlib 偵測人臉 & 特徵點萃取
 detector = dlib.get_frontal_face_detector(
 )                                     # 呼叫人臉偵測器
 predictor = dlib.shape_predictor(
-    "./一些Python程式/shape_predictor_68_face_landmarks.dat")     # 呼叫特徵點萃取器
+    "/media/hoho/Transcend/備份/專題/CV/shape_predictor_68_face_landmarks.dat")     # 呼叫特徵點萃取器
 
 
 clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
@@ -82,9 +80,8 @@ def test(img):
 
 
 # 呼叫模型
-clf_1 = joblib.load('./一些Python程式/clf_4.pkl')
+clf_1 = joblib.load('/media/hoho/Transcend/備份/專題/CV/clf_5.pkl')
 
 
 # 套用模型
 print(clf_1.predict(test(img)))
-
