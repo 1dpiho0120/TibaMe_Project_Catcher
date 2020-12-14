@@ -16,7 +16,7 @@ import joblib    # 保存 sklearn 模型的函式庫，亦可使用 pickle
 emotions = ["anger", "happy", "neutral", "sad", "surprise"]
 
 
-# 定義字適應
+# 定義自適應（提高照片對比度）
 '''Contrast Limited Adaptive Histogram Equalization（自適應值方圖均衡化），是一種計算機圖像處理技術，用於提高圖像的對比度
 clipLimit參數表示對比度的大小，tileGridSize參數表示每次處理塊的大小 。'''
 clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
@@ -26,7 +26,7 @@ clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
 detector = dlib.get_frontal_face_detector(
 )                                     # 呼叫人臉偵測器
 predictor = dlib.shape_predictor(
-    "./一些Python程式/shape_predictor_68_face_landmarks.dat")     # 呼叫特徵點萃取器
+    "./CV/shape_predictor_68_face_landmarks.dat")     # 呼叫特徵點萃取器
 
 
 '''    ★  SVM w/ Linear Kernel ★ （以下kernel參數可調整再訓練）  '''
@@ -164,4 +164,4 @@ print("Mean value lin svm: %s" % np.mean(accuracy_lin))
 
 # 儲存訓練好的模型
 '''前面的clf為我們上面的svm.SVC()，後面的clf.pkl為檔名'''
-joblib.dump(clf, './一些Python程式/clf_4.pkl')
+joblib.dump(clf, './CV/clf_4.pkl')
